@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#7866e8" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Dayflow" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  <meta name="description" content="Dayflow — a calm, focused daily task and progress tracker." />
+  <title>Dayflow — Daily Focus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div id="offline-banner" class="offline-banner" role="status" aria-live="polite"><span class="offline-dot"></span> You’re offline — showing your last saved view. Changes need a connection.</div>
+  <div id="auth-screen" class="auth-screen">
+    <div class="auth-brand"><span class="brand-mark">d</span><span>dayflow</span></div>
+    <div class="auth-card">
+      <div class="eyebrow">YOUR DAY, WITH INTENTION</div>
+      <h1 id="auth-title">Make room for<br><span>what matters.</span></h1>
+      <p class="muted auth-copy">A little progress every day adds up to something big.</p>
+      <form id="auth-form">
+        <label id="name-wrap" class="field hidden">Your name<input id="auth-name" type="text" autocomplete="name" placeholder="Alex Morgan" /></label>
+        <label class="field">Email address<input id="auth-email" type="email" autocomplete="email" placeholder="you@example.com" required /></label>
+        <label class="field">Password<input id="auth-password" type="password" autocomplete="current-password" minlength="8" placeholder="At least 8 characters" required /></label>
+        <p id="auth-error" class="error-text" role="alert"></p>
+        <button class="btn btn-primary btn-wide" id="auth-submit" type="submit">Sign in <span>↗</span></button>
+      </form>
+      <p class="auth-switch"><span id="switch-label">New to Dayflow?</span> <button id="auth-switch" class="text-button" type="button">Create an account</button></p>
+    </div>
+    <div class="auth-foot">Designed for progress, not perfection.</div>
+  </div>
+
+  <div id="app" class="app-shell hidden">
+    <aside class="sidebar">
+      <a class="brand" href="#"><span class="brand-mark">d</span><span>dayflow</span></a>
+      <div class="workspace-label">WORKSPACE</div>
+      <nav class="side-nav">
+        <button class="nav-item active" data-view="today"><span class="nav-icon">◷</span> My day <span id="today-count" class="nav-count">0</span></button>
+        <button class="nav-item" data-view="upcoming"><span class="nav-icon">▦</span> Upcoming</button>
+        <button class="nav-item" data-view="overdue"><span class="nav-icon">!</span> Overdue <span id="overdue-count" class="nav-count warn hidden">0</span></button>
+        <button class="nav-item" data-view="completed"><span class="nav-icon">✓</span> Completed</button>
+        <button class="nav-item" data-view="progress"><span class="nav-icon">↗</span> Progress</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <button id="install-btn" class="install-btn hidden" type="button"><span>⬇</span> Install app</button>
+        <div class="sidebar-tip"><div class="tip-icon">✳</div><strong>Small steps count.</strong><p>Focus on the next right thing. The rest will follow.</p></div>
+        <div class="user-row"><div id="avatar" class="avatar">A</div><div class="user-info"><strong id="user-name">Your account</strong><span id="user-email">you@example.com</span></div><button id="logout" class="icon-button" aria-label="Sign out" title="Sign out">↗</button></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="mobile-brand"><span class="brand-mark">d</span><span>dayflow</span></div>
+        <div class="breadcrumb">Workspace <span>/</span> <strong id="breadcrumb-current">My day</strong></div>
+        <div class="topbar-right"><span class="date-chip"><span class="online-dot"></span><span id="header-date">Today</span></span><button id="mobile-logout" class="icon-button mobile-logout" aria-label="Sign out">↗</button></div>
+      </header>
+
+      <section class="page-heading">
+        <div><div class="eyebrow" id="greeting">LET'S MAKE IT COUNT</div><h1 id="page-title">Good afternoon<span class="heading-period">.</span></h1><p id="page-subtitle" class="muted">Here’s your focus for today.</p></div>
+        <div class="heading-actions"><span id="streak-pill" class="streak-pill hidden" title="Days in a row with at least one finished task"><span class="flame">🔥</span><strong id="streak-count">0</strong><span id="streak-label">day streak</span></span><button id="mobile-install" class="btn btn-soft hidden" type="button">⬇ Install</button><button id="add-task-top" class="btn btn-primary"><span class="plus">＋</span> Add a task</button></div>
+      </section>
+
+      <section id="today-view" class="view">
+        <div class="overview-grid">
+          <article class="progress-card">
+            <div class="card-top"><div><span class="card-kicker">DAILY PROGRESS</span><h2>You’re moving forward.</h2></div><span class="sparkle">✳</span></div>
+            <div class="progress-content"><div class="ring-wrap"><svg class="progress-ring" viewBox="0 0 120 120" aria-label="Daily completion"><circle class="ring-bg" cx="60" cy="60" r="49"></circle><circle id="ring-progress" class="ring-value" cx="60" cy="60" r="49"></circle></svg><div class="ring-label"><strong id="today-rate">0%</strong><span>complete</span></div></div><div class="progress-copy"><strong id="progress-headline">A fresh start.</strong><p id="progress-message">Choose a task and build some momentum.</p><div class="mini-progress"><div id="mini-progress-fill"></div></div><span id="progress-count" class="small-muted">0 of 0 tasks done</span></div></div>
+          </article>
+          <article class="stat-card"><div class="stat-icon purple">✓</div><span class="card-kicker">COMPLETED TODAY</span><div class="stat-number" id="stat-completed">0</div><p class="stat-caption">tasks checked off</p><div class="stat-foot"><span class="stat-trend">↗</span> Every win matters</div></article>
+          <article class="stat-card"><div class="stat-icon orange">◎</div><span class="card-kicker">LEFT TO DO</span><div class="stat-number" id="stat-remaining">0</div><p class="stat-caption">one step at a time</p><div class="stat-foot">Keep your focus small</div></article>
+        </div>
+
+        <div class="content-grid">
+          <section class="panel tasks-panel">
+            <div class="panel-heading"><div><h2>Today’s tasks <span id="task-heading-count" class="subtle-count">0</span></h2><p class="muted">Make progress at your own pace.</p></div><button id="add-task-inline" class="btn btn-soft"><span>＋</span> New task</button></div>
+            <form id="quick-add" class="quick-add" autocomplete="off"><span class="quick-plus">＋</span><input id="quick-title" type="text" maxlength="180" placeholder="Quick add a task…" aria-label="Quick add a task for today" /><select id="quick-category" aria-label="Category"><option>Study</option><option>Work</option><option>Health</option><option>Personal</option><option>Other</option></select><button class="btn btn-primary" type="submit">Add</button></form>
+            <div class="task-toolbar"><div class="filter-tabs" id="task-filters"><button class="filter-tab active" data-filter="all">All tasks</button><button class="filter-tab" data-filter="active">In progress</button><button class="filter-tab" data-filter="done">Completed</button></div><div class="toolbar-right"><label class="search-box"><span aria-hidden="true">⌕</span><input id="task-search" type="search" placeholder="Search tasks" aria-label="Search tasks" /></label><span id="task-date-label" class="small-muted"></span></div></div>
+            <div id="task-list" class="task-list"></div>
+            <nav id="task-pager" class="pager hidden" aria-label="Task pages"></nav>
+            <div id="empty-state" class="empty-state hidden"><div class="empty-art">✳</div><h3 id="empty-title">A clear space to begin.</h3><p id="empty-copy">Add your first task and make today count.</p><button id="empty-add" class="btn btn-soft">＋ Create a task</button></div>
+          </section>
+          <aside class="right-column">
+            <section class="panel week-panel"><div class="panel-heading compact"><div><h2>This week</h2><p class="muted">Your consistency, at a glance.</p></div><span class="week-icon">↗</span></div><div class="week-summary"><strong id="week-rate">0%</strong><span>completion rate</span></div><div id="week-bars" class="week-bars"></div><div class="week-legend"><span><i class="legend-dot"></i> Completed</span><span id="week-total">0 tasks</span></div></section>
+            <section class="quote-card"><span class="quote-mark">“</span><p>Success is the sum of small efforts, repeated day in and day out.</p><span class="quote-author">— Robert Collier</span><div class="quote-decoration">✳</div></section>
+          </aside>
+        </div>
+      </section>
+
+      <section id="list-view" class="view hidden"><div class="panel list-view-panel"><div class="panel-heading"><div><h2 id="list-view-title">Upcoming tasks</h2><p id="list-view-subtitle" class="muted">See what’s coming up next.</p></div><div class="panel-actions"><button id="reschedule-overdue" class="btn btn-soft hidden" type="button">↻ Move all to today</button><button id="list-add" class="btn btn-primary">＋ Add a task</button></div></div><div class="task-toolbar list-toolbar"><span id="list-total" class="small-muted"></span><label class="search-box"><span aria-hidden="true">⌕</span><input id="list-search" type="search" placeholder="Search tasks" aria-label="Search tasks" /></label></div><div id="secondary-task-list" class="task-list"></div><nav id="list-pager" class="pager hidden" aria-label="Task pages"></nav><div id="secondary-empty" class="empty-state hidden"><div class="empty-art">✳</div><h3>Nothing here yet.</h3><p>Tasks you add will show up here.</p><button class="btn btn-soft" id="secondary-add">＋ Create a task</button></div></div></section>
+
+      <section id="progress-view" class="view hidden">
+        <div class="progress-stats-grid"><article class="panel progress-stat"><span class="card-kicker">ALL-TIME TASKS</span><strong id="all-total">0</strong><span class="muted">tasks created</span></article><article class="panel progress-stat"><span class="card-kicker">ALL-TIME COMPLETED</span><strong id="all-completed">0</strong><span class="muted">wins collected</span></article><article class="panel progress-stat"><span class="card-kicker">OVERALL COMPLETION</span><strong id="all-rate">0%</strong><span class="muted">your long-term pace</span></article><article class="panel progress-stat"><span class="card-kicker">BEST STREAK</span><strong><span id="best-streak">0</span><small> days</small></strong><span class="muted">in a row, so far</span></article></div>
+        <section class="panel history-panel"><div class="panel-heading"><div><h2>Your last 7 days</h2><p class="muted">Consistency is built one day at a time.</p></div><span class="history-badge">Last 7 days</span></div><div id="history-chart" class="history-chart"></div><div class="chart-foot"><span><i class="legend-dot"></i> Completed tasks</span><span><i class="legend-dot pale"></i> Remaining tasks</span></div></section>
+        <section class="panel reflection-panel"><div class="reflection-icon">✦</div><div><h2>Progress over perfection.</h2><p class="muted">Your task history stays in your account, so you can look back at the work you’ve put in. Keep showing up.</p></div></section>
+      </section>
+      <footer class="app-footer">Made for your next small win <span>✳</span></footer>
+    </main>
+  </div>
+
+  <div id="task-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <form id="task-form" class="modal-card">
+      <div class="modal-head"><div><span class="eyebrow">MAKE IT HAPPEN</span><h2 id="modal-title">Add a task</h2></div><button type="button" id="modal-close" class="icon-button close-button" aria-label="Close">×</button></div>
+      <label class="field">Task name<input id="task-title" type="text" maxlength="180" placeholder="e.g. Solve 3 DSA problems" required /></label>
+      <label class="field">A little more detail <span class="optional">(optional)</span><textarea id="task-notes" rows="3" maxlength="1000" placeholder="What does done look like?"></textarea></label>
+      <div class="form-row"><label class="field">Category<select id="task-category"><option>Study</option><option>Work</option><option>Health</option><option>Personal</option><option>Other</option></select></label><label class="field">Priority<select id="task-priority"><option>Low</option><option selected>Medium</option><option>High</option></select></label></div>
+      <label class="field">Plan for<input id="task-date" type="date" required /></label>
+      <p id="task-error" class="error-text" role="alert"></p>
+      <div class="modal-actions"><button type="button" id="modal-cancel" class="btn btn-ghost">Cancel</button><button type="submit" id="save-task" class="btn btn-primary">Save task <span>↗</span></button></div>
+    </form>
+  </div>
+  <div id="confirm-modal" class="modal-backdrop hidden" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title"><div class="modal-card confirm-card"><div class="confirm-icon">×</div><h2 id="confirm-title">Delete this task?</h2><p id="confirm-text" class="muted">This can’t be undone.</p><div class="modal-actions"><button type="button" id="confirm-cancel" class="btn btn-ghost">Keep it</button><button type="button" id="confirm-ok" class="btn btn-danger">Delete</button></div></div></div>
+  <canvas id="fx" class="fx" aria-hidden="true"></canvas>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="/app.js"></script>
+</body>
+</html>

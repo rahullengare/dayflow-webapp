@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/70166edb-06c0-46f8-8b6f-eec2990698e1/resourceGroups/day-flow-rg/providers/Microsoft.Web/sites/dayflow-todo",
+    "appService.deploySubpath": "."
+}
